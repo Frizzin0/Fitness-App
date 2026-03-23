@@ -1,6 +1,13 @@
 import { supabase } from './supabase'
 import { format, startOfWeek, endOfWeek, subWeeks } from 'date-fns'
 
+
+// Restituisce la data locale di Roma come stringa yyyy-MM-dd
+function today(): string {
+  // Usiamo semplicemente new Date() e formattiamo: il browser è già nella timezone dell'utente
+  return format(new Date(), 'yyyy-MM-dd')
+}
+
 export async function getProfilo() {
   const { data } = await supabase.from('profilo').select('*').limit(1).single()
   return data
@@ -113,8 +120,13 @@ export async function getPianoAllenamento() {
 }
 
 export async function getDashboardStats() {
-  const oggi = format(new Date(), 'yyyy-MM-dd')
+  const todayStr = today()
   const treSettimane = format(subWeeks(new Date(), 3), 'yyyy-MM-dd')
+
+  // Settimana: lun-dom centrata sulla data locale
+  const now = new Date()
+  const weekStart = format(startOfWeek(now, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const weekEnd   = format(endOfWeek(now,   { weekStartsOn: 1 }), 'yyyy-MM-dd')
 
   const [sessioni, pastiSettimana, dispensa] = await Promise.all([
     supabase
@@ -125,8 +137,8 @@ export async function getDashboardStats() {
     supabase
       .from('piano_pasti')
       .select('*')
-      .gte('data', format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd'))
-      .lte('data', format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')),
+      .gte('data', weekStart)
+      .lte('data', weekEnd),
     supabase
       .from('dispensa')
       .select('*')
@@ -137,6 +149,9 @@ export async function getDashboardStats() {
     sessioni: sessioni.data || [],
     pastiSettimana: pastiSettimana.data || [],
     dispensa: dispensa.data || [],
+    todayStr,
+    weekStart,
+    weekEnd,
   }
 }
 
