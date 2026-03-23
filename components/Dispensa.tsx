@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { format, parseISO, isAfter, isBefore, addDays } from 'date-fns'
 import { getDispensa, updateDispensaQuantita, addDispensaItem, deleteDispensaItem, getCategorie } from '../lib/api'
-import { Dispensa, Categoria } from '../lib/types'
+import type { Dispensa, Categoria } from '../lib/types'
 
 const CAT_EMOJI: Record<string, string> = {
   'Proteine': '🥩', 'Carboidrati': '🌾', 'Latticini': '🥛',
