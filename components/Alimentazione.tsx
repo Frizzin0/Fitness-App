@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { format, startOfWeek, addDays, parseISO } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { getPastoPianificato, togglePastoPianificato, addPianoPasto, deletePianoPasto } from '../lib/api'
-import { PianoPasto } from '../lib/types'
+import { MomentoType, PianoPasto } from '../lib/types'
 
 const MOMENTO_ORDER = ['colazione','pranzo','merenda','cena','pre-workout','post-workout','spuntino']
 const MOMENTO_COLOR: Record<string, string> = {
@@ -19,7 +19,7 @@ export default function Alimentazione() {
 
   // Form
   const [newNome, setNewNome] = useState('')
-  const [newMomento, setNewMomento] = useState('pranzo')
+  const [newMomento, setNewMomento] = useState<MomentoType>('pranzo')
   const [newData, setNewData] = useState('')
   const [newKcal, setNewKcal] = useState('')
   const [newP, setNewP] = useState('')
@@ -116,7 +116,7 @@ export default function Alimentazione() {
             <input type="date" value={newData || selectedDate} onChange={e => setNewData(e.target.value)} style={inputStyle} />
           </FieldGroup>
           <FieldGroup label="Momento">
-            <select value={newMomento} onChange={e => setNewMomento(e.target.value)} style={inputStyle}>
+            <select value={newMomento} onChange={e => setNewMomento(e.target.value as MomentoType)} style={inputStyle}>
               {MOMENTO_ORDER.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
           </FieldGroup>

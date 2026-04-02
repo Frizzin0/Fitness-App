@@ -13,7 +13,7 @@ export type GruppoMuscolare =
   | 'petto' | 'schiena' | 'gambe' | 'spalle'
   | 'bicipiti' | 'tricipiti' | 'core' | 'full body'
 
-export type TabId = 'dashboard' | 'allenamento' | 'alimentazione' | 'calendario' | 'salute'
+export type TabId = 'dashboard' | 'allenamento' | 'alimentazione' | 'dispensa'
 
 // ── Profilo ───────────────────────────────────────────────────────────────────
 

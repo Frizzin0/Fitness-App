@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { format, parseISO, startOfWeek, addDays } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { getSessioniAllenamento, getPianoAllenamento, addSessione, addEsercizio, addSerie } from '../lib/api'
-import { SessioneAllenamento, PianoAllenamento } from '../lib/types'
+import { SessioneAllenamento, PianoAllenamento, GruppoMuscolare } from '../lib/types'
 
 const TIPO_COLOR: Record<string, string> = {
   pesi: '#e8ff47', corsa: '#2ed573', 'corsa+pesi': '#3b82f6', mobilita: '#ff6b35', riposo: '#2a2a2f',
 }
 // 0=Lun … 6=Dom
 const GIORNI = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom']
-const GRUPPI = ['petto', 'schiena', 'spalle', 'bicipiti', 'tricipiti', 'gambe', 'core', 'full body']
+const GRUPPI: GruppoMuscolare[] = ['petto', 'schiena', 'spalle', 'bicipiti', 'tricipiti', 'gambe', 'core', 'full body']
 
 // Converte il getDay() di JS (0=Dom..6=Sab) al nostro indice (0=Lun..6=Dom)
 function dowToIndex(d: Date): number {
@@ -20,7 +20,7 @@ type Step = 'list' | 'new-session'
 
 interface NewEsercizio {
   nome: string
-  gruppo: string
+  gruppo: GruppoMuscolare
   serie: { reps: string; peso: string; rpe: string }[]
 }
 
@@ -42,7 +42,7 @@ export default function Allenamento() {
   const [noteSession, setNoteSession] = useState('')
   const [esercizi, setEsercizi] = useState<NewEsercizio[]>([])
   const [newEsNome, setNewEsNome] = useState('')
-  const [newEsGruppo, setNewEsGruppo] = useState('petto')
+  const [newEsGruppo, setNewEsGruppo] = useState<GruppoMuscolare>('petto')
 
   const today = new Date()
   // Settimana lun-dom
@@ -222,7 +222,7 @@ export default function Allenamento() {
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <input placeholder="Nome esercizio" value={newEsNome} onChange={e => setNewEsNome(e.target.value)} style={{ ...inputStyle, flex: 1, marginBottom: 0 }} />
-              <select value={newEsGruppo} onChange={e => setNewEsGruppo(e.target.value)} style={{ ...inputStyle, width: 'auto', marginBottom: 0 }}>
+              <select value={newEsGruppo} onChange={e => setNewEsGruppo(e.target.value as GruppoMuscolare)} style={{ ...inputStyle, width: 'auto', marginBottom: 0 }}>
                 {GRUPPI.map(g => <option key={g} value={g}>{g}</option>)}
               </select>
               <button onClick={addEsercizioToList} style={{ ...chipStyle, background: '#e8ff4720', color: '#e8ff47', border: '1px solid #e8ff4740', whiteSpace: 'nowrap' }}>
